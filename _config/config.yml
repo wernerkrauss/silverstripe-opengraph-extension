@@ -1,0 +1,23 @@
+---
+Name: opengraphextension
+After:
+  - '#opengraphsettings'
+  - '#opengraphextensions'
+---
+Netwerkstatt\OpenGraph\Extension\OpenGraphImageExtension:
+  # Options for resizing
+  og_image_width: 1200
+  og_image_height: 630
+
+Page:
+  extensions:
+    - Netwerkstatt\OpenGraph\Extension\OpenGraphImageExtension
+    - Netwerkstatt\OpenGraph\Extension\SchemaExtension
+
+SilverStripe\CMS\Control\ContentController:
+  extensions:
+    - Netwerkstatt\OpenGraph\Extension\SchemaExtension
+
+TractorCow\OpenGraph\ObjectBuilders\OpenGraphBuilder:
+  extensions:
+    - Netwerkstatt\OpenGraph\Extension\OpenGraphBuilderExtension

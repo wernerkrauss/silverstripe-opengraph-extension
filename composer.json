@@ -1,0 +1,21 @@
+{
+    "name": "netwerkstatt/silverstripe-opengraph-extension",
+    "description": "Extends tractorcow/silverstripe-opengraph with better image handling (FocusPoint), Twitter cards, and Schema.org support.",
+    "type": "silverstripe-vendor-module",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": "^8.1",
+        "silverstripe/framework": "^5 || ^6",
+        "tractorcow/silverstripe-opengraph": "^6",
+        "netwerkstatt/silverstripe-image-toolkit": "^1"
+    },
+    "suggest": {
+        "jonom/silverstripe-focuspoint": "Allows better image cropping for social media",
+        "spatie/schema-org": "Fluent API for Schema.org JSON-LD"
+    },
+    "autoload": {
+        "psr-4": {
+            "Netwerkstatt\\OpenGraph\\": "src/"
+        }
+    }
+}
