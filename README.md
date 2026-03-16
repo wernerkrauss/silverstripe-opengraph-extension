@@ -5,7 +5,8 @@ Extends [tractorcow/silverstripe-opengraph](https://github.com/tractorcow/silver
 ## Features
 
 - **Advanced Image Handling**: Automatically resizes images to 1200x630px using `FocusFill()` (if `jonom/silverstripe-focuspoint` is installed) or `Fill()`.
-- **Watermark Support**: Automatically applies watermarks if configured in `SiteConfig`.
+- **Watermark Support**: Automatically applies watermarks if configured in `SiteConfig` (requires `netwerkstatt/silverstripe-image-toolkit`).
+- **SiteConfig Integration**: Adds global fields for a default Open Graph image and an optional watermark logo.
 - **CMS Preview**: Adds a real-time Social Media preview in the "OpenGraph" tab of the CMS, including warnings for missing content.
 - **Elemental Support**: Automatically generates `og:description` from Elemental blocks if the main content field is empty.
 - **Twitter Cards**: Automatically generates `twitter:card` (summary_large_image).
@@ -17,6 +18,10 @@ Extends [tractorcow/silverstripe-opengraph](https://github.com/tractorcow/silver
 ### OpenGraphImageExtension
 Adds a `OGImageCustom` field to pages for specific Open Graph images. It also provides the `getOGImage()` hook for the builder and the CMS preview.
 - **Target**: `Page`
+
+### SiteConfigOpenGraphExtension
+Adds global settings for a default Open Graph image and a watermark logo (requires `silverstripe-image-toolkit`).
+- **Target**: `SilverStripe\SiteConfig\SiteConfig`
 
 ### ElementalOpenGraphExtension
 Provides an optimized `getOGDescription()` for pages using Silverstripe Elemental. It uses `getElementsForSearch()` to aggregate content from blocks.

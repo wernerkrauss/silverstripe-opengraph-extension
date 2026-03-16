@@ -6,7 +6,7 @@ en:
     Warning: 'Warning'
     MissingDescription: 'Description is missing. Please add a custom description to the field Meta-Description'
     MissingImage: 'Image is missing. Please upload image above or add a default image to SiteConfig.'
-  Netwerkstatt\Site\Extension\SiteConfigOpenGraph:
+  Netwerkstatt\OpenGraph\Extension\SiteConfigOpenGraphExtension:
     DefaultOGImage: 'Default Open Graph Image'
     DefaultOGImageDescription: 'Used when no specific image is set on a page. Recommended size: 1200 x 630 pixels.'
     OGWatermarkLogo: 'Open Graph Watermark (PNG)'
