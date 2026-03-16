@@ -3,10 +3,9 @@
 namespace Netwerkstatt\OpenGraph\Extension;
 
 use Page;
+use SilverStripe\Core\Extension;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\Core\Extension;
-
 use TractorCow\OpenGraph\ObjectBuilders\OpenGraphBuilder;
 
 /**
@@ -29,11 +28,13 @@ class OpenGraphBuilderExtension extends Extension
         // 2. Add Dimensions for the OG Image (important for first-time sharing)
         if ($object->hasMethod('getOGImage')) {
             $image = $object->getOGImage();
-            if ($image) {
+            $exists = is_string($image) ? !empty($image) : ($image && $image->exists());
+
+            if ($exists) {
                 // @phpstan-ignore parameterByRef.type
-                $owner->AppendTag($tags, 'og:image:width', '1200');
+                $owner->AppendTag($tags, 'og:image:width', $object->config()->get('og_image_width'));
                 // @phpstan-ignore parameterByRef.type
-                $owner->AppendTag($tags, 'og:image:height', '630');
+                $owner->AppendTag($tags, 'og:image:height', $object->config()->get('og_image_height'));
             }
         }
     }
@@ -51,7 +52,7 @@ class OpenGraphBuilderExtension extends Extension
 
         if ($siteConfig->TwitterHandle) {
             // @phpstan-ignore parameterByRef.type
-            $owner->AppendTag($tags, 'twitter:site', '@' . ltrim((string) $siteConfig->TwitterHandle, '@'));
+            $owner->AppendTag($tags, 'twitter:site', '@' . ltrim((string)$siteConfig->TwitterHandle, '@'));
         }
     }
 }
