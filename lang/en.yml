@@ -1,0 +1,13 @@
+en:
+  Netwerkstatt\OpenGraph\Extension\OpenGraphImageExtension:
+    OGImageCustom: 'Specific Open Graph Image'
+    OGImageCustomDescription: 'Recommended size: 1200 x 630 pixels. Set focus point for optimal social media cropping.'
+    PreviewHeader: 'Open Graph Preview'
+    Warning: 'Warning'
+    MissingDescription: 'Description is missing. Please add a custom description to the field Meta-Description'
+    MissingImage: 'Image is missing. Please upload image above or add a default image to SiteConfig.'
+  Netwerkstatt\Site\Extension\SiteConfigOpenGraph:
+    DefaultOGImage: 'Default Open Graph Image'
+    DefaultOGImageDescription: 'Used when no specific image is set on a page. Recommended size: 1200 x 630 pixels.'
+    OGWatermarkLogo: 'Open Graph Watermark (PNG)'
+    OGWatermarkLogoDescription: 'Will be overlaid on the Open Graph image. Please use a transparent PNG file.'

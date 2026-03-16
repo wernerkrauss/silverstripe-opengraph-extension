@@ -31,10 +31,16 @@ class OpenGraphImageExtension extends Extension
     {
         $fields->addFieldToTab(
             'Root.OpenGraph',
-            UploadField::create('OGImageCustom', 'Spezifisches Open Graph Bild')
-                ->setDescription('Empfohlene Größe: 1200 x 630 Pixel. Fokuspunkt setzen für optimalen Social-Media-Zuschnitt.')
+            UploadField::create('OGImageCustom', _t(self::class . '.OGImageCustom', 'Specific Open Graph Image'))
+                ->setDescription(_t(
+                    self::class . '.OGImageCustomDescription',
+                    'Recommended size: 1200 x 630 pixels. Set focus point for optimal social media cropping.'
+                ))
         );
-        $fields->addFieldToTab('Root.OpenGraph', HeaderField::create('PreviewHeader', 'Open Graph Preview', 2));
+        $fields->addFieldToTab(
+            'Root.OpenGraph',
+            HeaderField::create('PreviewHeader', _t(self::class . '.PreviewHeader', 'Open Graph Preview'), 2)
+        );
 
         $fields->addFieldToTab('Root.OpenGraph', $this->getOpenGraphPReview());
     }
@@ -58,18 +64,25 @@ class OpenGraphImageExtension extends Extension
 
         $warnings = [];
         if (!$description) {
-            $warnings[] = 'Description is missing. Please add a custom description to the field Meta-Description';
+            $warnings[] = _t(
+                self::class . '.MissingDescription',
+                'Description is missing. Please add a custom description to the field Meta-Description'
+            );
         }
         if (!$image) {
-            $warnings[] = 'Image is missing. Please upload image above or add a default image to SiteConfig.';
+            $warnings[] = _t(
+                self::class . '.MissingImage',
+                'Image is missing. Please upload image above or add a default image to SiteConfig.'
+            );
         }
 
         $warningHtml = '';
         if ($warnings) {
             $warningHtml = sprintf(
                 '<div style="background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px;">
-                    <strong>Warning:</strong> %s
+                    <strong>%s:</strong> %s
                 </div>',
+                _t(self::class . '.Warning', 'Warning'),
                 implode(' ', $warnings)
             );
         }
@@ -85,15 +98,16 @@ class OpenGraphImageExtension extends Extension
                 </div>
             </div>',
             $warningHtml,
-            $image ? sprintf('<div style="aspect-ratio: 1200/630; overflow: hidden; background: #eee;"><img src="%s" style="width: 100%%; height: 100%%; object-fit: cover;" /></div>',
-                $image) : '',
+            $image ? sprintf(
+                '<div style="aspect-ratio: 1200/630; overflow: hidden; background: #eee;"><img src="%s" style="width: 100%%; height: 100%%; object-fit: cover;" /></div>',
+                $image
+            ) : '',
             htmlspecialchars($siteName ?: ''),
             htmlspecialchars($title ?: ''),
             htmlspecialchars($description ?: '')
         );
 
         return LiteralField::create('OGPreview', $previewHtml);
-
     }
 
     private function getMetaContent(string $tags, string $property): ?string
