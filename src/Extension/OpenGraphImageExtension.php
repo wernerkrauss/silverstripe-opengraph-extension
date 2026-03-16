@@ -13,23 +13,23 @@ use SilverStripe\SiteConfig\SiteConfig;
  * @package Netwerkstatt\OpenGraph\Extension
  *
  * @property Image|OpenGraphImageExtension $owner
- * @method Image OGImage()
+ * @method Image OGImageCustom()
  */
 class OpenGraphImageExtension extends Extension
 {
     private static array $has_one = [
-        'OGImage' => Image::class,
+        'OGImageCustom' => Image::class,
     ];
 
     private static array $owns = [
-        'OGImage',
+        'OGImageCustom',
     ];
 
     public function updateCMSFields(FieldList $fields)
     {
         $fields->addFieldToTab(
             'Root.OpenGraph',
-            UploadField::create('OGImage', 'Spezifisches Open Graph Bild')
+            UploadField::create('OGImageCustom', 'Spezifisches Open Graph Bild')
                 ->setDescription('Empfohlene Größe: 1200 x 630 Pixel. Fokuspunkt setzen für optimalen Social-Media-Zuschnitt.')
         );
     }
@@ -45,8 +45,8 @@ class OpenGraphImageExtension extends Extension
         $image = null;
 
         // 1. Specific Page OG Image
-        if ($this->getOwner()->OGImageID) {
-            $image = $this->getOwner()->OGImage();
+        if ($this->getOwner()->OGImageCustomID) {
+            $image = $this->getOwner()->OGImageCustom();
         }
 
         // 2. Fallback to SiteConfig Default
