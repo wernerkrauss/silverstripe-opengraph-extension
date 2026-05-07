@@ -2,9 +2,11 @@
 
 namespace Netwerkstatt\OpenGraph\Extension;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 use Spatie\SchemaOrg\Schema;
+use TractorCow\OpenGraph\Extensions\OpenGraphObjectExtension;
 
 class SchemaExtension extends Extension
 {
@@ -31,17 +33,18 @@ class SchemaExtension extends Extension
      */
     public function generateSchema()
     {
-        $object = $this->getOwner();
+        /** @var SiteTree $owner */
+        $owner = $this->getOwner();
 
         if (class_exists(Schema::class)) {
             // Using Spatie\SchemaOrg
             $schema = Schema::webPage()
-                ->name($object->Title)
-                ->url($object->AbsoluteLink())
-                ->description($object->MetaDescription ?: $object->dbObject('Content')->Summary());
+                ->name($owner->Title)
+                ->url($owner->AbsoluteLink())
+                ->description($this->getDescription());
 
             // Hook for specific modifications
-            $object->extend('updateSchemaData', $schema);
+            $owner->extend('updateSchemaData', $schema);
 
             return $schema->toArray();
         }
@@ -50,14 +53,28 @@ class SchemaExtension extends Extension
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'WebPage',
-            'name' => $object->Title,
-            'url' => $object->AbsoluteLink(),
-            'description' => $object->MetaDescription ?: $object->dbObject('Content')->Summary(),
+            'name' => $owner->Title,
+            'url' => $owner->AbsoluteLink(),
+            'description' => $this->getDescription(),
         ];
 
         // Hook for specific modifications
-        $object->extend('updateSchemaData', $schema);
+        $owner->extend('updateSchemaData', $schema);
 
         return $schema;
+    }
+
+    /**
+     * @return string
+     */
+    private function getDescription()
+    {
+        /** @var SiteTree $owner */
+
+        $owner = $this->getOwner();
+        if ($owner->hasExtension(OpenGraphObjectExtension::class)) {
+            return $owner->getOGDescription();
+        }
+        return $owner->MetaDescription ?: $owner->dbObject('Content')->Summary();
     }
 }
