@@ -5,6 +5,7 @@ namespace Netwerkstatt\OpenGraph\Extension;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
+use Netwerkstatt\OpenGraph\Service\GraphSchemaBuilder;
 use Spatie\SchemaOrg\Schema;
 use TractorCow\OpenGraph\Extensions\OpenGraphObjectExtension;
 
@@ -17,9 +18,11 @@ class SchemaExtension extends Extension
     {
         $schema = $this->generateSchema();
         if ($schema) {
-            $json = is_string($schema) ? $schema : json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             Requirements::insertHeadTags(
-                sprintf('<script type="application/ld+json">%s</script>', $json),
+                sprintf(
+                    '<script type="application/ld+json">%s</script>',
+                    json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                ),
                 'schema-json-ld'
             );
         }
@@ -37,16 +40,7 @@ class SchemaExtension extends Extension
         $owner = $this->getOwner();
 
         if (class_exists(Schema::class)) {
-            // Using Spatie\SchemaOrg
-            $schema = Schema::webPage()
-                ->name($owner->Title)
-                ->url($owner->AbsoluteLink())
-                ->description($this->getDescription());
-
-            // Hook for specific modifications
-            $owner->extend('updateSchemaData', $schema);
-
-            return $schema->toArray();
+            return new GraphSchemaBuilder()->build($owner);
         }
 
         // Generic fallback if Spatie is not installed

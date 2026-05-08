@@ -35,6 +35,10 @@ Extends the `OpenGraphBuilder` to include Twitter card types and image dimension
 Injects JSON-LD into the page head.
 - **Target**: `Page` and `ContentController`
 
+### SiteTreeSchemaGraphExtension
+Provides a default `WebPage` node for all `SiteTree` records using `spatie/schema-org`.
+- **Target**: `SilverStripe\CMS\Model\SiteTree`
+
 ## Installation
 
 With composer:
@@ -64,14 +68,86 @@ Netwerkstatt\Site\Page\BlockPage:
 
 ## Schema.org Customization
 
-You can extend the JSON-LD data in your `Page` class or via an extension:
+The schema graph follows an extension-first provider/orchestrator pattern:
+
+- The module orchestrates graph creation in `GraphSchemaBuilder`.
+- Project code contributes nodes via dedicated extensions/providers.
+- No schema-specific methods are required in project base classes like `Page` or `PageController`.
+
+#### Contributor hooks
+
+- `updateSchemaGraphContributors(array &$contributors, SiteTree $page, SiteConfig $siteConfig)`
+- `updateSchemaGraphItems(array &$items, SiteTree $page, SiteConfig $siteConfig)`
+- `updateSchemaGraphNodes(array &$nodes, SiteTree $page, SiteConfig $siteConfig)`
+
+#### Safe project examples
+
+Example 1: Add a project-specific provider (e.g. on `SiteConfig`):
 
 ```php
-public function updateSchemaData(&$schema)
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Extension;
+use Spatie\SchemaOrg\BaseType;
+use Spatie\SchemaOrg\Schema;
+
+class SiteConfigSchemaExtension extends Extension
 {
-    // If spatie/schema-org is used, $schema is a Spatie object
-    if ($schema instanceof \Spatie\SchemaOrg\WebPage) {
-         $schema->author('My Name');
+    /**
+     * @return array<int, BaseType>
+     */
+    public function provideSchemaGraphNodes(SiteTree $page): array
+    {
+        $website = Schema::webSite()
+            ->name($this->getOwner()->Title)
+            ->url($page->getAbsoluteBaseURL());
+
+        return [$website];
+    }
+}
+```
+
+Example 2: Collect block items via a dedicated page extension:
+
+```php
+use Netwerkstatt\Site\Page\BlockPage;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Extension;
+
+class BlockPageSchemaItemsExtension extends Extension
+{
+    /**
+     * @param array<int, object> $items
+     */
+    public function updateSchemaGraphItems(array &$items, SiteTree $page): void
+    {
+        if (!$page instanceof BlockPage) {
+            return;
+        }
+
+        foreach ($page->ElementalArea()->Elements() as $element) {
+            $items[] = $element;
+        }
+    }
+}
+```
+
+Example 3: Let each block/model provide its own node:
+
+```php
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\SiteConfig\SiteConfig;
+use Spatie\SchemaOrg\BaseType;
+use Spatie\SchemaOrg\Schema;
+
+class RoomType extends DataObject
+{
+    /**
+     * @return array<int, BaseType>
+     */
+    public function provideSchemaGraphNodes(SiteTree $page, SiteConfig $siteConfig): array
+    {
+        $node = Schema::hotelRoom()->name($this->Title);
+        return [$node];
     }
 }
 ```
