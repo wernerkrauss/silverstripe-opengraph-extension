@@ -24,7 +24,7 @@ class GraphSchemaBuilder
         }
 
         $siteConfig = SiteConfig::current_site_config();
-        if (!$siteConfig) {
+        if (!$siteConfig instanceof SiteConfig) {
             return null;
         }
 
@@ -83,6 +83,9 @@ class GraphSchemaBuilder
 
     /**
      * @param array<int, object> $contributors
+     * @param object $owner
+     * @param SiteTree $page
+     * @param SiteConfig $siteConfig
      */
     private function extendSchemaGraphContributors(array &$contributors, object $owner, SiteTree $page, SiteConfig $siteConfig): void
     {
@@ -90,11 +93,11 @@ class GraphSchemaBuilder
             $owner->extend('updateSchemaGraphContributors', $contributors, $page, $siteConfig);
         }
 
-        if ($owner !== $page && method_exists($page, 'extend')) {
+        if ($owner !== $page) {
             $page->extend('updateSchemaGraphContributors', $contributors, $page, $siteConfig);
         }
 
-        if ($siteConfig !== $page && method_exists($siteConfig, 'extend')) {
+        if ($siteConfig !== $page) {
             $siteConfig->extend('updateSchemaGraphContributors', $contributors, $page, $siteConfig);
         }
 
@@ -103,6 +106,9 @@ class GraphSchemaBuilder
 
     /**
      * @param array<int, object> $items
+     * @param object $owner
+     * @param SiteTree $page
+     * @param SiteConfig $siteConfig
      */
     private function extendSchemaGraphItems(array &$items, object $owner, SiteTree $page, SiteConfig $siteConfig): void
     {
@@ -110,11 +116,11 @@ class GraphSchemaBuilder
             $owner->extend('updateSchemaGraphItems', $items, $page, $siteConfig);
         }
 
-        if ($owner !== $page && method_exists($page, 'extend')) {
+        if ($owner !== $page) {
             $page->extend('updateSchemaGraphItems', $items, $page, $siteConfig);
         }
 
-        if ($siteConfig !== $page && method_exists($siteConfig, 'extend')) {
+        if ($siteConfig !== $page) {
             $siteConfig->extend('updateSchemaGraphItems', $items, $page, $siteConfig);
         }
 

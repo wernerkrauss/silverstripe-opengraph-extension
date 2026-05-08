@@ -149,14 +149,16 @@ class OpenGraphImageExtension extends Extension
         $height = $this->getOwner()->config()->get('og_image_height');
 
         // Use FocusFill if Jonom/FocusPoint is installed and image has a focus point
+        /** @var Image $ogImage */
         $ogImage = $image->hasMethod('FocusFill')
             ? $image->FocusFill($width, $height)
             : $image->Fill($width, $height);
 
-        if ($ogImage && $ogImage->hasMethod('Watermark')) {
+        if ($ogImage instanceof Image && $ogImage->hasMethod('Watermark')) {
             $config = SiteConfig::current_site_config();
             $logo = $config->hasMethod('OGWatermarkLogo') ? $config->OGWatermarkLogo() : null;
             if ($logo && $logo->exists()) {
+                /** @phpstan-ignore method.notFound */
                 $ogImage = $ogImage->Watermark($logo);
             }
         }
