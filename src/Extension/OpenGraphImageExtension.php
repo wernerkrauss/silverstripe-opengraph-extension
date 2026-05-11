@@ -4,6 +4,7 @@ namespace Netwerkstatt\OpenGraph\Extension;
 
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Assets\Image;
+use SilverStripe\Assets\Storage\DBFile;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
@@ -154,7 +155,7 @@ class OpenGraphImageExtension extends Extension
             ? $image->FocusFill($width, $height)
             : $image->Fill($width, $height);
 
-        if ($ogImage instanceof Image && $ogImage->hasMethod('Watermark')) {
+        if (($ogImage instanceof DBFile || $ogImage instanceof Image) && $ogImage->hasMethod('Watermark')) {
             $config = SiteConfig::current_site_config();
             $logo = $config->hasMethod('OGWatermarkLogo') ? $config->OGWatermarkLogo() : null;
             if ($logo && $logo->exists()) {
